@@ -1,0 +1,81 @@
+    public boolean update(int id, String nom, String prenom, String dn, String email, String role) {
+        String sql = "UPDATE person SET nom=?, prenom=?, dn=?, email=?, role=? WHERE id=?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, nom);
+            ps.setString(2, prenom);
+            ps.setString(3, dn);
+            ps.setString(4, email);
+            ps.setString(5, role);
+            ps.setInt(6, id);
+            int rows = ps.executeUpdate();
+            System.out.println("PersonDAO.update rows affected: " + rows);
+            return rows > 0;
+        } catch (Exception e) {
+            System.out.println("Error PersonDAO.update: " + e.getMessage());
+            return false;
+        }
+    }
+    public boolean updatePassword(int id, String newMtp) {
+        String sql = "UPDATE person SET mtp=? WHERE id=?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, newMtp);
+            ps.setInt(2, id);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            System.out.println("Error PersonDAO.updatePassword: " + e.getMessage());
+            return false;
+        }
+    }
+    public boolean delete(int id) {
+        String sql = "DELETE FROM person WHERE id=?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            int rows = ps.executeUpdate();
+            System.out.println("PersonDAO.delete rows affected: " + rows);
+            return rows > 0;
+        } catch (Exception e) {
+            System.out.println("Error PersonDAO.delete: " + e.getMessage());
+            return false;
+        }
+    }
+    public List<Object[]> getAll() {
+        List<Object[]> list = new ArrayList<>();
+        String sql = "SELECT id, nom, prenom, dn, email, role FROM person";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Object[] row = {
+                        rs.getInt("id"),
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getString("dn"),
+                        rs.getString("email"),
+                        rs.getString("role")
+                };
+                list.add(row);
+            }
+        } catch (Exception e) {
+            System.out.println("Error PersonDAO.getAll: " + e.getMessage());
+        }
+        return list;
+    }
+    public Object[] getById(int id) {
+        String sql = "SELECT id, nom, prenom, dn, email, role FROM person WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Object[]{
+                        rs.getInt("id"),
+                        rs.getString("nom"),
+                        rs.getString("prenom"),
+                        rs.getString("dn"),
+                        rs.getString("email"),
+                        rs.getString("role")
+                };
+            }
+        } catch (Exception e) {
+            System.out.println("Error PersonDAO.getById: " + e.getMessage());
+        }
+        return null;
+    }

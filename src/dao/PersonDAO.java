@@ -4,7 +4,6 @@ import java.sql.*;
 
 public class PersonDAO {
     private Connection connection;
-
     public PersonDAO() throws SQLException {
         try {
             this.connection = DatabaseConnection.getConnection();
@@ -14,12 +13,10 @@ public class PersonDAO {
             System.out.println("PersonDAO initialized successfully");
         } catch (SQLException e) {
             System.out.println("Could not connect to database in PersonDAO: " + e.getMessage());
-            throw e; // Re-throw to let caller know initialization failed
+            throw e;
         }
     }
-
     public int[] login(String email, String password) {
-        // Add null check for safety
         if (connection == null) {
             System.out.println("Error: Database connection is null in login method");
             return null;
@@ -47,13 +44,11 @@ public class PersonDAO {
         }
         return null;
     }
-
     public int add(String nom, String prenom, String dn, String email, String role, String mtp) {
         if (connection == null) {
             System.out.println("Error: Database connection is null in add method");
             return -1;
         }
-
         String sql = "INSERT INTO person (nom, prenom, dn, email, role, mtp) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, nom);
@@ -75,13 +70,11 @@ public class PersonDAO {
         }
         return -1;
     }
-
     public boolean emailExists(String email) {
         if (connection == null) {
             System.out.println("Error: Database connection is null in emailExists method");
             return false;
         }
-
         String sql = "SELECT id FROM person WHERE email = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -93,8 +86,6 @@ public class PersonDAO {
             return false;
         }
     }
-
-    // Optional: Method to close connection when done
     public void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {

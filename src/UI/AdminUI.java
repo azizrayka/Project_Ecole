@@ -1,7 +1,6 @@
 package UI;
 
 import dao.AdminDAO;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -11,7 +10,6 @@ public class AdminUI extends JFrame {
     private JPanel panelEtudiants, panelEnseignants, panelAffectMatiere, panelAffectEtudiant;
     private JTable tableEtudiants, tableEnseignants;
     private final AdminDAO dao = new AdminDAO();
-
     public void styleTable(JTable table) {
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         table.getTableHeader().setOpaque(false);
@@ -24,7 +22,6 @@ public class AdminUI extends JFrame {
         table.setSelectionBackground(new Color(235, 245, 251));
         table.setSelectionForeground(Color.BLACK);
     }
-
     public void styleButton(JButton btn) {
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
@@ -37,7 +34,6 @@ public class AdminUI extends JFrame {
             public void mouseExited(java.awt.event.MouseEvent evt)  { btn.setBackground(new Color(52, 152, 219)); }
         });
     }
-
     public void initializeLayeredPanel() {
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setBounds(0, 0, 600, 600);

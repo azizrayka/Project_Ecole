@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-
 public class EnseignantUI extends JFrame {
     private JPanel panelEtudiant, panelMatieres, panelnotes;
     private JTable tableEtudiants;
@@ -17,7 +16,7 @@ public class EnseignantUI extends JFrame {
     public void styleTable(JTable table) {
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         table.getTableHeader().setOpaque(false);
-        table.getTableHeader().setBackground(new Color(52, 152, 219)); // Same Blue
+        table.getTableHeader().setBackground(new Color(52, 152, 219));
         table.getTableHeader().setForeground(Color.WHITE);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         table.setRowHeight(30);
@@ -25,6 +24,18 @@ public class EnseignantUI extends JFrame {
         table.setShowVerticalLines(false);
         table.setSelectionBackground(new Color(235, 245, 251));
         table.setSelectionForeground(Color.BLACK);
+    }
+    public void styleButton(JButton btn) {
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setBackground(new Color(52, 152, 219));
+        btn.setForeground(Color.WHITE);
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) { btn.setBackground(new Color(41, 128, 185)); }
+            public void mouseExited(java.awt.event.MouseEvent evt)  { btn.setBackground(new Color(52, 152, 219)); }
+        });
     }
     public void updateTableFromDAO() {
         try {
@@ -46,7 +57,7 @@ public class EnseignantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         tableEtudiants = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tableEtudiants);
-        scrollPane.setBounds(20, 50, 560, 400);
+        scrollPane.setBounds(20, 50, 460, 400);
         styleTable(tableEtudiants);
         panelEtudiant.setLayout(null);
         panelEtudiant.add(scrollPane);
@@ -57,7 +68,7 @@ public class EnseignantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(column, 0);
         matiereTable = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(matiereTable);
-        scrollPane.setBounds(20, 50, 560, 400);
+        scrollPane.setBounds(20, 50, 460, 400);
         styleTable(matiereTable);
         panelMatieres.setLayout(null);
         panelMatieres.add(scrollPane);
@@ -78,48 +89,46 @@ public class EnseignantUI extends JFrame {
             System.out.println("updateMatiereFromDAO error: " + e.getMessage());
         }
     }
-    public Component styleButton(JButton btn) {
-        btn.setFocusPainted(false);
-        btn.setBorderPainted(false);
-        btn.setBackground(new Color(52, 152, 219));
-        btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn.setBackground(new Color(41, 128, 185));
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn.setBackground(new Color(52, 152, 219));
-            }
-        });
-        return null;
-    }
     public void initializeSidePanel(){
         JPanel panel = new JPanel();
         panel.setBackground(Color.darkGray);
-        panel.setBounds(600, 0, 300, 600);
+        panel.setBounds(500, 0, 300, 600);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(Box.createRigidArea(new Dimension(20, 20)));
+
+        Dimension btnSize = new Dimension(200, 40);
+
         JButton button = new JButton("consulter Etudiants");
+        button.setMaximumSize(btnSize);
+        button.setPreferredSize(btnSize);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.addActionListener(e->{
             panelEtudiant.setVisible(true);
             panelMatieres.setVisible(false);
             panelnotes.setVisible(false);
         });
         JButton button2 = new JButton("consulter matiéres");
+        button2.setMaximumSize(btnSize);
+        button2.setPreferredSize(btnSize);
+        button2.setAlignmentX(Component.CENTER_ALIGNMENT);
         button2.addActionListener(e->{
             panelEtudiant.setVisible(false);
             panelMatieres.setVisible(true);
             panelnotes.setVisible(false);
         });
         JButton button3 = new JButton("gerer notes");
+        button3.setMaximumSize(btnSize);
+        button3.setPreferredSize(btnSize);
+        button3.setAlignmentX(Component.CENTER_ALIGNMENT);
         button3.addActionListener(e->{
             panelEtudiant.setVisible(false);
             panelMatieres.setVisible(false);
             panelnotes.setVisible(true);
         });
         JButton btnBack = new JButton("Retour");
+        btnBack.setMaximumSize(btnSize);
+        btnBack.setPreferredSize(btnSize);
+        btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnBack.setBounds(270, 440, 200, 40);
         styleButton(btnBack);
         btnBack.addActionListener(e -> {
@@ -141,23 +150,23 @@ public class EnseignantUI extends JFrame {
     }
     public void initializeLayeredPanel(int id_prof) {
         JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setBounds(0, 0, 600, 600);
+        layeredPane.setBounds(0, 0, 500, 600);
 
         panelEtudiant = new JPanel();
         panelEtudiant.setBackground(Color.lightGray);
-        panelEtudiant.setBounds(0, 0, 600, 600);
+        panelEtudiant.setBounds(0, 0, 500, 600);
         panelEtudiant.setVisible(true);
         Etudiantable();
 
         panelMatieres = new JPanel();
         panelMatieres.setBackground(Color.lightGray);
-        panelMatieres.setBounds(0, 0, 600, 600);
+        panelMatieres.setBounds(0, 0, 500, 600);
         panelMatieres.setVisible(false);
         Matieretable();
 
         panelnotes = new JPanel();
         panelnotes.setBackground(Color.lightGray);
-        panelnotes.setBounds(0, 0, 600, 600);
+        panelnotes.setBounds(0, 0, 500, 600);
         panelnotes.setVisible(false);
         Notespanel(id_prof);
 
@@ -170,7 +179,7 @@ public class EnseignantUI extends JFrame {
         panelnotes.setLayout(null);
         JPanel form = new JPanel();
         form.setBackground(Color.white);
-        form.setBounds(20, 20, 560, 150);
+        form.setBounds(20, 20, 460, 150);
         form.setLayout(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns
         form.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -187,7 +196,7 @@ public class EnseignantUI extends JFrame {
 
         JPanel actions = new JPanel();
         actions.setBackground(Color.white);
-        actions.setBounds(20, 180, 560, 50);
+        actions.setBounds(20, 180, 460, 50);
         actions.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
         JButton btnAdd = new JButton("Ajouter");

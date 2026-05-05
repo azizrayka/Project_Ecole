@@ -13,59 +13,48 @@ public class EtudiantUI extends JFrame {
     private JTable matiereTable;
     private JTable notesTable;
     public void styleTable(JTable table) {
-        // Table Header Styling
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         table.getTableHeader().setOpaque(false);
-        table.getTableHeader().setBackground(new Color(52, 152, 219)); // Same Blue
+        table.getTableHeader().setBackground(new Color(52, 152, 219));
         table.getTableHeader().setForeground(Color.WHITE);
-
-        // Rows and Grid
         table.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         table.setRowHeight(30);
         table.setGridColor(new Color(230, 230, 230));
-        table.setShowVerticalLines(false); // Clean modern look
-
-        // Selection Color
+        table.setShowVerticalLines(false);
         table.setSelectionBackground(new Color(235, 245, 251));
         table.setSelectionForeground(Color.BLACK);
     }
-    public Component styleButton(JButton btn) {
+    public void styleButton(JButton btn) {
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
-        btn.setBackground(new Color(52, 152, 219)); // Modern Flat Blue
+        btn.setBackground(new Color(52, 152, 219));
         btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn.setBackground(new Color(41, 128, 185)); // Darker blue
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                btn.setBackground(new Color(52, 152, 219));
-            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) { btn.setBackground(new Color(41, 128, 185)); }
+            public void mouseExited(java.awt.event.MouseEvent evt)  { btn.setBackground(new Color(52, 152, 219)); }
         });
-        return null;
     }
     public void initializeLayeredPanel(int id_etd) {
         JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setBounds(0, 0, 600, 600);
+        layeredPane.setBounds(0, 0, 500, 600);
 
         panelEtudiant = new JPanel();
         panelEtudiant.setBackground(Color.lightGray);
-        panelEtudiant.setBounds(0, 0, 600, 600);
+        panelEtudiant.setBounds(0, 0, 500, 600);
         panelEtudiant.setVisible(true);
         EnseignantTable();
 
         panelMatieres = new JPanel();
         panelMatieres.setBackground(Color.lightGray);
-        panelMatieres.setBounds(0, 0, 600, 600);
+        panelMatieres.setBounds(0, 0, 500, 600);
         panelMatieres.setVisible(false);
         Matieretable();
 
         panelnotes = new JPanel();
         panelnotes.setBackground(Color.lightGray);
-        panelnotes.setBounds(0, 0, 600, 600);
+        panelnotes.setBounds(0, 0, 500, 600);
         panelnotes.setVisible(false);
         Notestable(id_etd);
 
@@ -74,25 +63,23 @@ public class EtudiantUI extends JFrame {
         layeredPane.add(panelnotes, Integer.valueOf(2));
         this.add(layeredPane);
     }
-
     private void Notestable(int id_etd) {
         String[] column = {"Matiere", "Note"};
         DefaultTableModel model = new DefaultTableModel(column, 0);
         notesTable = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(notesTable);
-        scrollPane.setBounds(20, 50, 560, 400);
+        scrollPane.setBounds(20, 50, 460, 400);
         styleTable(notesTable);
         panelnotes.setLayout(null);
         panelnotes.add(scrollPane);
         updateNoteFromDAO(id_etd);
     }
-
     private void updateNoteFromDAO(int id_etd) {
         try {
             EtudiantDAO dao = new EtudiantDAO();
             List<Object[]> rows = dao.getNotes(id_etd);
 
-            DefaultTableModel model = (DefaultTableModel) notesTable.getModel(); // ← was tableEtudiants
+            DefaultTableModel model = (DefaultTableModel) notesTable.getModel();
             model.setRowCount(0);
             for (Object[] row : rows) {
                 model.addRow(row);
@@ -101,7 +88,6 @@ public class EtudiantUI extends JFrame {
             System.out.println(e.getMessage());
         }
     }
-
     public void updateTableFromDAO() {
         try {
             EtudiantDAO dao = new EtudiantDAO();
@@ -134,10 +120,10 @@ public class EtudiantUI extends JFrame {
     }
     public void Matieretable() {
         String[] column = {"matiere","coefficient"};
-        DefaultTableModel model = new DefaultTableModel(column, 0); // use DefaultTableModel
-        matiereTable = new JTable(model); // save as field, not local variable
+        DefaultTableModel model = new DefaultTableModel(column, 0);
+        matiereTable = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(matiereTable);
-        scrollPane.setBounds(20, 50, 560, 400);
+        scrollPane.setBounds(20, 50, 460, 400);
         styleTable(matiereTable);
         panelMatieres.setLayout(null);
         panelMatieres.add(scrollPane);
@@ -148,7 +134,7 @@ public class EtudiantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         tableEtudiants = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tableEtudiants);
-        scrollPane.setBounds(20, 50, 560, 400);
+        scrollPane.setBounds(20, 50, 460, 400);
         styleTable(tableEtudiants);
         panelEtudiant.setLayout(null);
         panelEtudiant.add(scrollPane);
@@ -157,44 +143,61 @@ public class EtudiantUI extends JFrame {
     public void initializeSidePanel(){
         JPanel panel = new JPanel();
         panel.setBackground(Color.darkGray);
-        panel.setBounds(600, 0, 300, 600);
+        panel.setBounds(500, 0, 300, 600);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(Box.createRigidArea(new Dimension(20, 20)));
+
+        Dimension btnSize = new Dimension(200, 40);
+
         JButton button = new JButton("consulter enseignants");
+        styleButton(button);
+        button.setMaximumSize(btnSize);
+        button.setPreferredSize(btnSize);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.addActionListener(e->{
             panelEtudiant.setVisible(true);
             panelMatieres.setVisible(false);
             panelnotes.setVisible(false);
         });
+
         JButton button2 = new JButton("consulter matiéres");
+        styleButton(button2);
+        button2.setMaximumSize(btnSize);
+        button2.setPreferredSize(btnSize);
+        button2.setAlignmentX(Component.CENTER_ALIGNMENT);
         button2.addActionListener(e->{
             panelEtudiant.setVisible(false);
             panelMatieres.setVisible(true);
             panelnotes.setVisible(false);
         });
+
         JButton button3 = new JButton("consulter notes");
+        styleButton(button3);
+        button3.setMaximumSize(btnSize);
+        button3.setPreferredSize(btnSize);
+        button3.setAlignmentX(Component.CENTER_ALIGNMENT);
         button3.addActionListener(e->{
             panelEtudiant.setVisible(false);
             panelMatieres.setVisible(false);
             panelnotes.setVisible(true);
         });
+
         JButton btnBack = new JButton("Retour");
-        btnBack.setBounds(270, 440, 200, 40);
         styleButton(btnBack);
+        btnBack.setMaximumSize(btnSize);
+        btnBack.setPreferredSize(btnSize);
+        btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnBack.addActionListener(e -> {
             dispose();
             new HomeUI();
         });
-        styleButton(button);
+
         panel.add(button);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        styleButton(button2);
         panel.add(button2);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        styleButton(button3);
         panel.add(button3);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
-        styleButton(btnBack);
         panel.add(btnBack);
         add(panel);
     }

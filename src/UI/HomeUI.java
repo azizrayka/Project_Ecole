@@ -5,7 +5,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class HomeUI extends JFrame {
-
     public void styleButton(JButton btn, boolean filled) {
         btn.setFocusPainted(false);
         btn.setBorderPainted(true);
@@ -15,7 +14,6 @@ public class HomeUI extends JFrame {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.setBorder(BorderFactory.createLineBorder(new Color(52, 152, 219), 2));
     }
-
     public void styleField(JTextField field, String placeholder) {
         field.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         field.setForeground(Color.GRAY);
@@ -39,39 +37,10 @@ public class HomeUI extends JFrame {
             }
         });
     }
-
-    private void initLeftPanel() {
-        JPanel left = new JPanel(null);
-        left.setBackground(new Color(44, 62, 80));
-        left.setBounds(0, 0, 400, 600);
-
-        JLabel logo = new JLabel("SMS", SwingConstants.CENTER);
-        logo.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        logo.setForeground(Color.WHITE);
-        logo.setBackground(new Color(52, 152, 219));
-        logo.setOpaque(true);
-        logo.setBounds(150, 120, 100, 100);
-
-        JLabel title = new JLabel("Bienvenue", SwingConstants.CENTER);
-        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
-        title.setForeground(Color.WHITE);
-        title.setBounds(50, 240, 300, 40);
-
-        JLabel subtitle = new JLabel("Système de gestion scolaire", SwingConstants.CENTER);
-        subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        subtitle.setForeground(new Color(149, 165, 166));
-        subtitle.setBounds(50, 285, 300, 25);
-
-        left.add(logo);
-        left.add(title);
-        left.add(subtitle);
-        add(left);
-    }
-
     private void initRightPanel() {
         JPanel right = new JPanel(null);
         right.setBackground(Color.WHITE);
-        right.setBounds(400, 0, 500, 600);
+        right.setBounds(200, 0, 500, 600);
 
         JLabel lblSignIn = new JLabel("Se connecter");
         lblSignIn.setFont(new Font("Segoe UI", Font.BOLD, 22));
@@ -94,15 +63,6 @@ public class HomeUI extends JFrame {
         JButton btnSignIn = new JButton("Se connecter");
         btnSignIn.setBounds(100, 255, 300, 40);
         styleButton(btnSignIn, true);
-
-        JLabel lblSignUp = new JLabel("Pas encore de compte ?", SwingConstants.CENTER);
-        lblSignUp.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lblSignUp.setForeground(new Color(149, 165, 166));
-        lblSignUp.setBounds(100, 343, 300, 20);
-
-        JButton btnSignUp = new JButton("Créer un compte");
-        btnSignUp.setBounds(100, 373, 300, 40);
-        styleButton(btnSignUp, false);
 
         btnSignIn.addActionListener(e -> {
             String email    = txtEmail.getText().trim();
@@ -134,18 +94,10 @@ public class HomeUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Erreur: " + ex.getMessage());
             }
         });
-
-        btnSignUp.addActionListener(e -> {
-            dispose();
-            new SignUpUI();
-        });
-
         right.add(lblSignIn);
         right.add(txtEmail);
         right.add(txtPassword);
         right.add(btnSignIn);
-        right.add(lblSignUp);
-        right.add(btnSignUp);
         add(right);
     }
 
@@ -155,7 +107,6 @@ public class HomeUI extends JFrame {
         setSize(900, 600);
         setResizable(false);
         setLayout(null);
-        initLeftPanel();
         initRightPanel();
         setLocationRelativeTo(null);
         setVisible(true);

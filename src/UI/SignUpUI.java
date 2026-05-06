@@ -254,4 +254,5 @@ public class SignUpUI extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+    static void main(){}
 }

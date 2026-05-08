@@ -1,8 +1,6 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,35 +13,54 @@ public class AdminDAO {
             System.out.println("Could not connect to database in DAO");
         }
     }
+    public int addPerson(String nom, String prenom, String dn,
+                         String email, String role, String mtp) {
+        String sql = "INSERT INTO person (nom, prenom, dn, email, role, mtp) VALUES (?,?,?,?,?,?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, nom);
+            ps.setString(2, prenom);
+            ps.setString(3, dn);
+            ps.setString(4, email);
+            ps.setString(5, role);
+            ps.setString(6, mtp);
+            ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
     public List<Object[]> getEtudiants() {
         List<Object[]> list = new ArrayList<>();
         String sql = """
-            SELECT e.id_etu, p.nom, p.prenom, e.moy, e.niveau
-            FROM etudiant e
-            JOIN person p ON p.id = e.id_person
-        """;
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
+        SELECT e.id_etu, p.nom, p.prenom, p.dn, p.email, e.niveau
+        FROM etudiant e
+        JOIN person p ON e.id_person = p.id
+    """;
+        try (Statement st = connection.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 list.add(new Object[]{
                         rs.getInt("id_etu"),
                         rs.getString("nom"),
                         rs.getString("prenom"),
-                        rs.getDouble("moy"),
+                        rs.getString("dn"),
+                        rs.getString("email"),
                         rs.getString("niveau")
                 });
             }
-        } catch (Exception e) {
-            System.out.println("Error getEtudiants: " + e.getMessage());
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return list;
     }
-    public boolean addEtudiant(int id_etu, double moy, String niveau) {
-        String sql = "INSERT INTO etudiant (id_etu, moy, niveau) VALUES (?, ?, ?)";
+    public boolean addEtudiant(int id_etu, String niveau) {
+        String sql = "INSERT INTO etudiant (id_etu, niveau) VALUES (?,?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id_etu);
-            ps.setDouble(2, moy);
-            ps.setString(3, niveau);
+            ps.setString(2, niveau);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

@@ -57,7 +57,7 @@ public class EnseignantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         tableEtudiants = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tableEtudiants);
-        scrollPane.setBounds(20, 50, 460, 400);
+        scrollPane.setBounds(20, 50, 600, 400);
         styleTable(tableEtudiants);
         panelEtudiant.setLayout(null);
         panelEtudiant.add(scrollPane);
@@ -68,7 +68,7 @@ public class EnseignantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(column, 0);
         matiereTable = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(matiereTable);
-        scrollPane.setBounds(20, 50, 460, 400);
+        scrollPane.setBounds(20, 50, 600, 400);
         styleTable(matiereTable);
         panelMatieres.setLayout(null);
         panelMatieres.add(scrollPane);
@@ -92,7 +92,7 @@ public class EnseignantUI extends JFrame {
     public void initializeSidePanel(){
         JPanel panel = new JPanel();
         panel.setBackground(Color.darkGray);
-        panel.setBounds(500, 0, 300, 600);
+        panel.setBounds(790, 0, 300, 600);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(Box.createRigidArea(new Dimension(20, 20)));
 
@@ -150,23 +150,23 @@ public class EnseignantUI extends JFrame {
     }
     public void initializeLayeredPanel(int id_prof) {
         JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setBounds(0, 0, 500, 600);
+        layeredPane.setBounds(0, 0, 800, 600);
 
         panelEtudiant = new JPanel();
         panelEtudiant.setBackground(Color.lightGray);
-        panelEtudiant.setBounds(0, 0, 500, 600);
+        panelEtudiant.setBounds(0, 0, 800, 600);
         panelEtudiant.setVisible(true);
         Etudiantable();
 
         panelMatieres = new JPanel();
         panelMatieres.setBackground(Color.lightGray);
-        panelMatieres.setBounds(0, 0, 500, 600);
+        panelMatieres.setBounds(0, 0, 800, 600);
         panelMatieres.setVisible(false);
         Matieretable();
 
         panelnotes = new JPanel();
         panelnotes.setBackground(Color.lightGray);
-        panelnotes.setBounds(0, 0, 500, 600);
+        panelnotes.setBounds(0, 0, 800, 600);
         panelnotes.setVisible(false);
         Notespanel(id_prof);
 
@@ -179,7 +179,7 @@ public class EnseignantUI extends JFrame {
         panelnotes.setLayout(null);
         JPanel form = new JPanel();
         form.setBackground(Color.white);
-        form.setBounds(20, 20, 460, 150);
+        form.setBounds(20, 20, 600, 150);
         form.setLayout(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns
         form.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -272,7 +272,7 @@ public class EnseignantUI extends JFrame {
         this.id_prof = id_prof;
         setTitle("Enseignant");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(1100, 600);
         setResizable(false);
         setLayout(null);
         initializeLayeredPanel(id_prof);

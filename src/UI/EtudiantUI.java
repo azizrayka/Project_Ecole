@@ -38,23 +38,23 @@ public class EtudiantUI extends JFrame {
     }
     public void initializeLayeredPanel(int id_etd) {
         JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setBounds(0, 0, 500, 600);
+        layeredPane.setBounds(0, 0, 800, 600);
 
         panelEtudiant = new JPanel();
         panelEtudiant.setBackground(Color.lightGray);
-        panelEtudiant.setBounds(0, 0, 500, 600);
+        panelEtudiant.setBounds(0, 0, 800, 600);
         panelEtudiant.setVisible(true);
         EnseignantTable();
 
         panelMatieres = new JPanel();
         panelMatieres.setBackground(Color.lightGray);
-        panelMatieres.setBounds(0, 0, 500, 600);
+        panelMatieres.setBounds(0, 0, 800, 600);
         panelMatieres.setVisible(false);
         Matieretable();
 
         panelnotes = new JPanel();
         panelnotes.setBackground(Color.lightGray);
-        panelnotes.setBounds(0, 0, 500, 600);
+        panelnotes.setBounds(0, 0, 800, 600);
         panelnotes.setVisible(false);
         Notestable(id_etd);
 
@@ -68,7 +68,7 @@ public class EtudiantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(column, 0);
         notesTable = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(notesTable);
-        scrollPane.setBounds(20, 50, 460, 400);
+        scrollPane.setBounds(20, 50, 600, 400);
         styleTable(notesTable);
         panelnotes.setLayout(null);
         panelnotes.add(scrollPane);
@@ -123,7 +123,7 @@ public class EtudiantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(column, 0);
         matiereTable = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(matiereTable);
-        scrollPane.setBounds(20, 50, 460, 400);
+        scrollPane.setBounds(20, 50, 600, 400);
         styleTable(matiereTable);
         panelMatieres.setLayout(null);
         panelMatieres.add(scrollPane);
@@ -134,7 +134,7 @@ public class EtudiantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         tableEtudiants = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tableEtudiants);
-        scrollPane.setBounds(20, 50, 460, 400);
+        scrollPane.setBounds(20, 50, 600, 400);
         styleTable(tableEtudiants);
         panelEtudiant.setLayout(null);
         panelEtudiant.add(scrollPane);
@@ -143,7 +143,7 @@ public class EtudiantUI extends JFrame {
     public void initializeSidePanel(){
         JPanel panel = new JPanel();
         panel.setBackground(Color.darkGray);
-        panel.setBounds(500, 0, 300, 600);
+        panel.setBounds(790, 0, 300, 600);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(Box.createRigidArea(new Dimension(20, 20)));
 
@@ -205,7 +205,7 @@ public class EtudiantUI extends JFrame {
         this.id_etd = id_etd;
         setTitle("Etudiant");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(1100, 600);
         setResizable(false);
         setLayout(null);
         initializeLayeredPanel(id_etd);

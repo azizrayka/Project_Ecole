@@ -36,23 +36,23 @@ public class AdminUI extends JFrame {
     }
     public void initializeLayeredPanel() {
         JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setBounds(0, 0, 600, 600);
+        layeredPane.setBounds(0, 0, 800, 600);
 
         panelEtudiants = new JPanel();
         panelEtudiants.setBackground(Color.lightGray);
-        panelEtudiants.setBounds(0, 0, 600, 600);
+        panelEtudiants.setBounds(0, 0, 800, 600);
         panelEtudiants.setVisible(true);
         initEtudiantsPanel();
 
         panelEnseignants = new JPanel();
         panelEnseignants.setBackground(Color.lightGray);
-        panelEnseignants.setBounds(0, 0, 600, 600);
+        panelEnseignants.setBounds(0, 0, 800, 600);
         panelEnseignants.setVisible(false);
         initEnseignantsPanel();
 
         panelAffectMatiere = new JPanel();
         panelAffectMatiere.setBackground(Color.lightGray);
-        panelAffectMatiere.setBounds(0, 0, 600, 600);
+        panelAffectMatiere.setBounds(0, 0, 800, 600);
         panelAffectMatiere.setVisible(false);
         initAffectMatierePanel();
 
@@ -70,51 +70,78 @@ public class AdminUI extends JFrame {
     }
     private void initEtudiantsPanel() {
         panelEtudiants.setLayout(null);
-        String[] columns = {"ID", "Nom", "Prenom", "Moyenne", "Niveau"};
+        String[] columns = {"ID", "Nom", "Prénom", "Date naissance", "Email", "Niveau"};
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         tableEtudiants = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tableEtudiants);
-        scrollPane.setBounds(20, 20, 560, 280);
+        scrollPane.setBounds(20, 20, 740, 220);
         styleTable(tableEtudiants);
         panelEtudiants.add(scrollPane);
-        JTextField txtIdEtu  = new JTextField();
-        JTextField txtMoy    = new JTextField();
+        JLabel lblNom    = new JLabel("Nom");
+        JLabel lblPrenom = new JLabel("Prénom");
+        JLabel lblDn     = new JLabel("Date naissance (YYYY-MM-DD)");
+        JTextField txtNom    = new JTextField();
+        JTextField txtPrenom = new JTextField();
+        JTextField txtDn     = new JTextField();
+        int fw = 170, fh = 28, lh = 20;
+        int r1Label = 258, r1Field = 278;
+        int x1 = 20, x2 = 205, x3 = 390, x4 = 575;
+        lblNom.setBounds(x1, r1Label, fw, lh);
+        txtNom.setBounds(x1, r1Field, fw, fh);
+        lblPrenom.setBounds(x2, r1Label, fw, lh);
+        txtPrenom.setBounds(x2, r1Field, fw, fh);
+        lblDn.setBounds(x3, r1Label, fw, lh);
+        txtDn.setBounds(x3, r1Field, fw, fh);
+        JLabel lblEmail  = new JLabel("Email");
+        JLabel lblMtp    = new JLabel("Mot de passe");
+        JLabel lblNiveau = new JLabel("Niveau");
+        JTextField txtEmail  = new JTextField();
+        JTextField txtMtp    = new JTextField();
         JTextField txtNiveau = new JTextField();
-        txtIdEtu.setBounds(20,   330, 150, 30);
-        txtMoy.setBounds(180,    330, 150, 30);
-        txtNiveau.setBounds(340, 330, 150, 30);
-        panelEtudiants.add(new JLabel("ID Étudiant") {{ setBounds(20,  310, 150, 20); }});
-        panelEtudiants.add(new JLabel("Moyenne")     {{ setBounds(180, 310, 150, 20); }});
-        panelEtudiants.add(new JLabel("Niveau")      {{ setBounds(340, 310, 150, 20); }});
-        panelEtudiants.add(txtIdEtu);
-        panelEtudiants.add(txtMoy);
-        panelEtudiants.add(txtNiveau);
+        int r2Label = 323, r2Field = 343;
+        lblEmail.setBounds(x1, r2Label, fw, lh);
+        txtEmail.setBounds(x1, r2Field, fw, fh);
+        lblMtp.setBounds(x2, r2Label, fw, lh);
+        txtMtp.setBounds(x2, r2Field, fw, fh);
+        lblNiveau.setBounds(x3, r2Label, fw, lh);
+        txtNiveau.setBounds(x3, r2Field, fw, fh);
+        for (JLabel l : new JLabel[]{lblNom, lblPrenom, lblDn, lblEmail, lblMtp, lblNiveau})
+            panelEtudiants.add(l);
+        for (JTextField f : new JTextField[]{txtNom, txtPrenom, txtDn, txtEmail, txtMtp, txtNiveau})
+            panelEtudiants.add(f);
         JButton btnAdd    = new JButton("Ajouter");
         JButton btnDelete = new JButton("Supprimer");
-        btnAdd.setBounds(20,   375, 150, 35);
-        btnDelete.setBounds(180, 375, 150, 35);
+        btnAdd.setBounds(x1, 388, 170, 35);
+        btnDelete.setBounds(x2, 388, 170, 35);
         styleButton(btnAdd);
         styleButton(btnDelete);
         btnAdd.addActionListener(e -> {
-            try {
-                int id_etu    = Integer.parseInt(txtIdEtu.getText().trim());
-                double moy    = Double.parseDouble(txtMoy.getText().trim());
-                String niveau = txtNiveau.getText().trim();
-                if (niveau.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Le niveau ne peut pas être vide.");
-                    return;
-                }
-                if (dao.addEtudiant(id_etu, moy, niveau)) {
-                    JOptionPane.showMessageDialog(this, "Étudiant ajouté !");
-                    txtIdEtu.setText(""); txtMoy.setText(""); txtNiveau.setText("");
-                    updateEtudiantsTable();
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "Échec — vérifiez que l'ID existe dans la table person.",
-                            "Erreur", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "ID et Moyenne doivent être des nombres valides.");
+            String nom    = txtNom.getText().trim();
+            String prenom = txtPrenom.getText().trim();
+            String dn     = txtDn.getText().trim();
+            String email  = txtEmail.getText().trim();
+            String mtp    = txtMtp.getText().trim();
+            String niveau = txtNiveau.getText().trim();
+            if (nom.isEmpty() || prenom.isEmpty() || dn.isEmpty()
+                    || email.isEmpty() || mtp.isEmpty() || niveau.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Tous les champs sont obligatoires.");
+                return;
+            }
+            int newPersonId = dao.addPerson(nom, prenom, dn, email, "etudiant", mtp);
+            if (newPersonId == -1) {
+                JOptionPane.showMessageDialog(this,
+                        "Échec de l'ajout dans la table person.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (dao.addEtudiant(newPersonId, niveau)) {
+                JOptionPane.showMessageDialog(this, "Étudiant ajouté avec succès !");
+                for (JTextField f : new JTextField[]{txtNom, txtPrenom, txtDn, txtEmail, txtMtp, txtNiveau})
+                    f.setText("");
+                updateEtudiantsTable();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Person créé (ID=" + newPersonId + ") mais échec pour etudiant.",
+                        "Erreur partielle", JOptionPane.WARNING_MESSAGE);
             }
         });
         btnDelete.addActionListener(e -> {
@@ -124,8 +151,10 @@ public class AdminUI extends JFrame {
                 return;
             }
             int id_etu = (int) tableEtudiants.getValueAt(selected, 0);
-            int confirm = JOptionPane.showConfirmDialog(this, "Supprimer cet étudiant ?", "Confirmation", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Supprimer cet étudiant et son compte person ?", "Confirmation", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) return;
+
             if (dao.deleteEtudiant(id_etu)) {
                 JOptionPane.showMessageDialog(this, "Étudiant supprimé !");
                 updateEtudiantsTable();
@@ -298,7 +327,7 @@ public class AdminUI extends JFrame {
     public void initializeSidePanel() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.darkGray);
-        panel.setBounds(600, 0, 300, 600);
+        panel.setBounds(790, 0, 300, 600);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(Box.createRigidArea(new Dimension(20, 20)));
         JButton btn1 = new JButton("Gérer étudiants");
@@ -327,7 +356,7 @@ public class AdminUI extends JFrame {
     public AdminUI(int id) {
         setTitle("Admin");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900, 600);
+        setSize(1100, 600);
         setResizable(false);
         setLayout(null);
         initializeLayeredPanel();

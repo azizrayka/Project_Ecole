@@ -100,12 +100,7 @@ public class EtudiantDAO {
             System.out.println("getNotes: no etudiant found for id_person=" + id_person);
             return list;
         }
-        String sql = """
-            SELECT DISTINCT m.nom, n.note
-            FROM matiere m
-            JOIN note n ON n.nom_matiere = m.nom
-            WHERE n.id_etu = ?
-        """;
+        String sql = "SELECT DISTINCT m.nom, n.note FROM matiere m JOIN note n ON n.nom_matiere = m.nom WHERE n.id_etu = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id_etu);
             ResultSet rs = ps.executeQuery();

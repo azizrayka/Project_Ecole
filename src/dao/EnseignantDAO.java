@@ -53,7 +53,7 @@ public class EnseignantDAO implements BaseDAO<Enseignant> {
     }
     @Override
     public boolean delete(Enseignant enseignant) {
-        String sql = "UPDATE note SET note = 0 WHERE id_etu = ? AND nom_matiere = ?";
+        String sql = "DELETE FROM note WHERE id_etu = ? AND nom_matiere = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, enseignant.getId_etd());
             ps.setString(2, enseignant.getSpeciality());
@@ -66,26 +66,29 @@ public class EnseignantDAO implements BaseDAO<Enseignant> {
             return false;
         }
     }
-    public List<Object[]> getAll() {
+    public List<Object[]> getAll(int id_prof) {
         List<Object[]> data = new ArrayList<>();
         String sql = """
-            SELECT e.id_etu, p.nom, p.prenom, e.niveau, m.nom, n.note
-            FROM etudiant e
-            JOIN person p  ON e.id_person  = p.id
-            JOIN note n    ON e.id_etu      = n.id_etu
-            JOIN matiere m ON n.nom_matiere = m.nom
-        """;
-        try (PreparedStatement ps = connection.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                data.add(new Object[]{
-                        rs.getInt(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getDouble(6)
-                });
+        SELECT e.id_etu, p.nom, p.prenom, e.niveau, m.nom, n.note
+        FROM etudiant e
+        JOIN person p  ON e.id_person  = p.id
+        JOIN note n    ON e.id_etu      = n.id_etu
+        JOIN matiere m ON n.nom_matiere = m.nom
+        WHERE m.id_prof = ?
+    """;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id_prof);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    data.add(new Object[]{
+                            rs.getInt(1),
+                            rs.getString(2),
+                            rs.getString(3),
+                            rs.getString(4),
+                            rs.getString(5),
+                            rs.getDouble(6)
+                    });
+                }
             }
         } catch (Exception e) {
             System.out.println("Error EnseignantDAO.getAll: " + e.getMessage());
@@ -93,51 +96,19 @@ public class EnseignantDAO implements BaseDAO<Enseignant> {
         }
         return data;
     }
-    public List<Object[]> getMatiere(int id_prof) {
-        List<Object[]> data = new ArrayList<>();
+    public List<Object[]> getMatieres(int id_prof) {
+        List<Object[]> list = new ArrayList<>();
         String sql = "SELECT nom, coeff FROM matiere WHERE id_prof = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id_prof);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                data.add(new Object[]{
-                        rs.getString("nom"),
-                        rs.getDouble("coeff")
-                });
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Object[]{ rs.getString("nom"), rs.getDouble("coeff") });
+                }
             }
-        } catch (Exception e) {
-            System.out.println("Error EnseignantDAO.getMatiere: " + e.getMessage());
-            e.printStackTrace();
+        }catch (Exception e) {
+            System.out.println("Error getMatieres: " + e.getMessage());
         }
-        return data;
-    }
-    public List<Object[]> getAllByProf(int id_prof) {
-        List<Object[]> data = new ArrayList<>();
-        String sql = """
-            SELECT e.id_etu, p.nom, p.prenom, e.niveau, m.nom, n.note
-            FROM etudiant e
-            JOIN person p  ON e.id_person  = p.id
-            JOIN note n    ON e.id_etu      = n.id_etu
-            JOIN matiere m ON n.nom_matiere = m.nom
-            WHERE m.id_prof = ?
-        """;
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id_prof);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                data.add(new Object[]{
-                        rs.getInt(1),
-                        rs.getString(2),
-                        rs.getString(3),
-                        rs.getString(4),
-                        rs.getString(5),
-                        rs.getDouble(6)
-                });
-            }
-        } catch (Exception e) {
-            System.out.println("Error EnseignantDAO.getAllByProf: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return data;
+        return list;
     }
 }

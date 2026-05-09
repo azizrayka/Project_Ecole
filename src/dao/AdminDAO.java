@@ -102,8 +102,9 @@ public class AdminDAO {
         String sql = "SELECT id_person FROM etudiant WHERE id_etu = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id_etu);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt("id_person");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt("id_person");
+            }
         } catch (SQLException e) {
             System.out.println("Error getPersonIdFromEtudiant: " + e.getMessage());
             e.printStackTrace();
@@ -117,8 +118,7 @@ public class AdminDAO {
         FROM enseignant en
         JOIN person p ON p.id = en.id_person
     """;
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ResultSet rs = ps.executeQuery();
+        try (PreparedStatement ps = connection.prepareStatement(sql);ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 list.add(new Object[]{
                         rs.getInt("id_prof"),
@@ -164,8 +164,9 @@ public class AdminDAO {
         String sql = "SELECT id_person FROM enseignant WHERE id_prof = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id_prof);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt("id_person");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt("id_person");
+            }
         } catch (SQLException e) {
             System.out.println("Error getPersonIdFromEnseignant: " + e.getMessage());
             e.printStackTrace();

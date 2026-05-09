@@ -64,7 +64,7 @@ public class EtudiantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(column, 0);
         notesTable = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(notesTable);
-        scrollPane.setBounds(20, 50, 600, 400);
+        scrollPane.setBounds(100, 50, 600, 400);
         styleTable(notesTable);
         panelnotes.setLayout(null);
         panelnotes.add(scrollPane);
@@ -119,7 +119,7 @@ public class EtudiantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(column, 0);
         matiereTable = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(matiereTable);
-        scrollPane.setBounds(20, 50, 600, 400);
+        scrollPane.setBounds(100, 50, 600, 400);
         styleTable(matiereTable);
         panelMatieres.setLayout(null);
         panelMatieres.add(scrollPane);
@@ -130,7 +130,7 @@ public class EtudiantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         tableEtudiants = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tableEtudiants);
-        scrollPane.setBounds(20, 50, 600, 400);
+        scrollPane.setBounds(100, 50, 600, 400);
         styleTable(tableEtudiants);
         panelEtudiant.setLayout(null);
         panelEtudiant.add(scrollPane);

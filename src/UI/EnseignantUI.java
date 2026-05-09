@@ -40,7 +40,7 @@ public class EnseignantUI extends JFrame {
     public void updateTableFromDAO() {
         try {
             EnseignantDAO dao = new EnseignantDAO();
-            List<Object[]> rows = dao.getAll();
+            List<Object[]> rows = dao.getAll(id_prof);
 
             DefaultTableModel model = (DefaultTableModel) tableEtudiants.getModel();
             model.setRowCount(0);
@@ -57,18 +57,18 @@ public class EnseignantUI extends JFrame {
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         tableEtudiants = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tableEtudiants);
-        scrollPane.setBounds(20, 50, 600, 400);
+        scrollPane.setBounds(100, 50, 600, 400);
         styleTable(tableEtudiants);
         panelEtudiant.setLayout(null);
         panelEtudiant.add(scrollPane);
         updateTableFromDAO();
     }
     public void Matieretable() {
-        String[] column = {"matieres"};
+        String[] column = {"Matière", "Coefficient"};
         DefaultTableModel model = new DefaultTableModel(column, 0);
         matiereTable = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(matiereTable);
-        scrollPane.setBounds(20, 50, 600, 400);
+        scrollPane.setBounds(100, 50, 600, 400);
         styleTable(matiereTable);
         panelMatieres.setLayout(null);
         panelMatieres.add(scrollPane);
@@ -77,14 +77,12 @@ public class EnseignantUI extends JFrame {
     private void updateMatiereFromDAO(int id_prof) {
         try {
             EnseignantDAO dao = new EnseignantDAO();
-            List<Object[]> rows = dao.getMatiere(id_prof);
-
+            List<Object[]> rows = dao.getMatieres(id_prof);
             DefaultTableModel model = (DefaultTableModel) matiereTable.getModel();
             model.setRowCount(0);
             for (Object[] row : rows) {
                 model.addRow(row);
             }
-            System.out.println("Matieres loaded: " + rows.size());
         } catch (Exception e) {
             System.out.println("updateMatiereFromDAO error: " + e.getMessage());
         }
@@ -175,7 +173,7 @@ public class EnseignantUI extends JFrame {
         panelnotes.setLayout(null);
         JPanel form = new JPanel();
         form.setBackground(Color.white);
-        form.setBounds(20, 20, 600, 150);
+        form.setBounds(100, 20, 600, 150);
         form.setLayout(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns
         form.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JTextField txtEtudiantId = new JTextField();
@@ -189,7 +187,7 @@ public class EnseignantUI extends JFrame {
         form.add(txtNote);
         JPanel actions = new JPanel();
         actions.setBackground(Color.white);
-        actions.setBounds(20, 180, 460, 50);
+        actions.setBounds(100, 180, 500, 50);
         actions.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JButton btnAdd = new JButton("Ajouter");
         JButton btnUpdate = new JButton("Modifier");

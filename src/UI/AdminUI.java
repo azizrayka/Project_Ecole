@@ -58,7 +58,7 @@ public class AdminUI extends JFrame {
 
         panelAffectEtudiant = new JPanel();
         panelAffectEtudiant.setBackground(Color.lightGray);
-        panelAffectEtudiant.setBounds(0, 0, 600, 600);
+        panelAffectEtudiant.setBounds(0, 0, 800, 600);
         panelAffectEtudiant.setVisible(false);
         initAffectEtudiantPanel();
 
@@ -85,7 +85,7 @@ public class AdminUI extends JFrame {
         JTextField txtDn     = new JTextField();
         int fw = 170, fh = 28, lh = 20;
         int r1Label = 258, r1Field = 278;
-        int x1 = 20, x2 = 205, x3 = 390, x4 = 575;
+        int x1 = 20, x2 = 205, x3 = 390;
         lblNom.setBounds(x1, r1Label, fw, lh);
         txtNom.setBounds(x1, r1Field, fw, fh);
         lblPrenom.setBounds(x2, r1Label, fw, lh);
@@ -109,6 +109,7 @@ public class AdminUI extends JFrame {
             panelEtudiants.add(l);
         for (JTextField f : new JTextField[]{txtNom, txtPrenom, txtDn, txtEmail, txtMtp, txtNiveau})
             panelEtudiants.add(f);
+        JTextField[] allFields = {txtNom, txtPrenom, txtDn, txtEmail, txtMtp, txtNiveau};
         JButton btnAdd    = new JButton("Ajouter");
         JButton btnDelete = new JButton("Supprimer");
         btnAdd.setBounds(x1, 388, 170, 35);
@@ -135,8 +136,7 @@ public class AdminUI extends JFrame {
             }
             if (dao.addEtudiant(newPersonId, niveau)) {
                 JOptionPane.showMessageDialog(this, "Étudiant ajouté avec succès !");
-                for (JTextField f : new JTextField[]{txtNom, txtPrenom, txtDn, txtEmail, txtMtp, txtNiveau})
-                    f.setText("");
+                for (JTextField f : allFields) f.setText("");
                 updateEtudiantsTable();
             } else {
                 JOptionPane.showMessageDialog(this,
@@ -178,48 +178,89 @@ public class AdminUI extends JFrame {
     }
     private void initEnseignantsPanel() {
         panelEnseignants.setLayout(null);
-        String[] columns = {"ID", "Nom", "Prenom", "Spécialité"};
+        String[] columns = {"ID", "Nom", "Prénom", "email"};
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         tableEnseignants = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tableEnseignants);
-        scrollPane.setBounds(20, 20, 560, 280);
+        scrollPane.setBounds(20, 20, 740, 220);
         styleTable(tableEnseignants);
         panelEnseignants.add(scrollPane);
-        JTextField txtIdProf     = new JTextField();
-        JTextField txtSpeciality = new JTextField();
-        txtIdProf.setBounds(20,    330, 150, 30);
-        txtSpeciality.setBounds(180, 330, 200, 30);
-        panelEnseignants.add(new JLabel("ID Enseignant") {{ setBounds(20,  310, 150, 20); }});
-        panelEnseignants.add(new JLabel("Spécialité")    {{ setBounds(180, 310, 200, 20); }});
-        panelEnseignants.add(txtIdProf);
-        panelEnseignants.add(txtSpeciality);
+
+        int fw = 170, fh = 28, lh = 20;
+        int r1Label = 258, r1Field = 278;
+        int x1 = 20, x2 = 205, x3 = 390;
+
+        // Row 1: Nom / Prénom / Date naissance
+        JLabel lblNom    = new JLabel("Nom");
+        JLabel lblPrenom = new JLabel("Prénom");
+        JLabel lblDn     = new JLabel("Date naissance (YYYY-MM-DD)");
+        JTextField txtNom    = new JTextField();
+        JTextField txtPrenom = new JTextField();
+        JTextField txtDn     = new JTextField();
+        lblNom.setBounds(x1, r1Label, fw, lh);
+        txtNom.setBounds(x1, r1Field, fw, fh);
+        lblPrenom.setBounds(x2, r1Label, fw, lh);
+        txtPrenom.setBounds(x2, r1Field, fw, fh);
+        lblDn.setBounds(x3, r1Label, fw, lh);
+        txtDn.setBounds(x3, r1Field, fw, fh);
+
+        // Row 2: Email / Mot de passe  (specialité removed)
+        int r2Label = 323, r2Field = 343;
+        JLabel lblEmail = new JLabel("Email");
+        JLabel lblMtp   = new JLabel("Mot de passe");
+        JTextField txtEmail = new JTextField();
+        JTextField txtMtp   = new JTextField();
+        lblEmail.setBounds(x1, r2Label, fw, lh);
+        txtEmail.setBounds(x1, r2Field, fw, fh);
+        lblMtp.setBounds(x2, r2Label, fw, lh);
+        txtMtp.setBounds(x2, r2Field, fw, fh);
+
+        for (JLabel l : new JLabel[]{lblNom, lblPrenom, lblDn, lblEmail, lblMtp})
+            panelEnseignants.add(l);
+        for (JTextField f : new JTextField[]{txtNom, txtPrenom, txtDn, txtEmail, txtMtp})
+            panelEnseignants.add(f);
+
+        JTextField[] allFields = {txtNom, txtPrenom, txtDn, txtEmail, txtMtp};
+
         JButton btnAdd    = new JButton("Ajouter");
         JButton btnDelete = new JButton("Supprimer");
-        btnAdd.setBounds(20,   375, 150, 35);
-        btnDelete.setBounds(180, 375, 150, 35);
+        btnAdd.setBounds(x1, 388, 170, 35);
+        btnDelete.setBounds(x2, 388, 170, 35);
         styleButton(btnAdd);
         styleButton(btnDelete);
+
         btnAdd.addActionListener(e -> {
-            try {
-                int id_prof       = Integer.parseInt(txtIdProf.getText().trim());
-                String speciality = txtSpeciality.getText().trim();
-                if (speciality.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "La spécialité ne peut pas être vide.");
-                    return;
-                }
-                if (dao.addEnseignant(id_prof, speciality)) {
-                    JOptionPane.showMessageDialog(this, "Enseignant ajouté !");
-                    txtIdProf.setText(""); txtSpeciality.setText("");
-                    updateEnseignantsTable();
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "Échec — vérifiez que l'ID existe dans la table person.",
-                            "Erreur", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "L'ID doit être un nombre valide.");
+            String nom    = txtNom.getText().trim();
+            String prenom = txtPrenom.getText().trim();
+            String dn     = txtDn.getText().trim();
+            String email  = txtEmail.getText().trim();
+            String mtp    = txtMtp.getText().trim();
+
+            if (nom.isEmpty() || prenom.isEmpty() || dn.isEmpty()
+                    || email.isEmpty() || mtp.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Tous les champs sont obligatoires.");
+                return;
+            }
+
+            int newPersonId = dao.addPerson(nom, prenom, dn, email, "enseignant", mtp);
+            if (newPersonId == -1) {
+                JOptionPane.showMessageDialog(this,
+                        "Échec de l'ajout dans la table person.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Pass empty string for speciality — assign it later via "Affecter matière"
+            if (dao.addEnseignant(newPersonId, "")) {
+                JOptionPane.showMessageDialog(this, "Enseignant ajouté avec succès !");
+                for (JTextField f : allFields) f.setText("");
+                updateEnseignantsTable();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Person créé (ID=" + newPersonId + ") mais échec pour enseignant.",
+                        "Erreur partielle", JOptionPane.WARNING_MESSAGE);
             }
         });
+
         btnDelete.addActionListener(e -> {
             int selected = tableEnseignants.getSelectedRow();
             if (selected == -1) {
@@ -227,8 +268,10 @@ public class AdminUI extends JFrame {
                 return;
             }
             int id_prof = (int) tableEnseignants.getValueAt(selected, 0);
-            int confirm = JOptionPane.showConfirmDialog(this, "Supprimer cet enseignant ?", "Confirmation", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Supprimer cet enseignant et son compte person ?", "Confirmation", JOptionPane.YES_NO_OPTION);
             if (confirm != JOptionPane.YES_OPTION) return;
+
             if (dao.deleteEnseignant(id_prof)) {
                 JOptionPane.showMessageDialog(this, "Enseignant supprimé !");
                 updateEnseignantsTable();
@@ -236,6 +279,7 @@ public class AdminUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Échec de la suppression.", "Erreur", JOptionPane.ERROR_MESSAGE);
             }
         });
+
         panelEnseignants.add(btnAdd);
         panelEnseignants.add(btnDelete);
         updateEnseignantsTable();
@@ -353,6 +397,7 @@ public class AdminUI extends JFrame {
         for (JPanel p : new JPanel[]{panelEtudiants, panelEnseignants, panelAffectMatiere, panelAffectEtudiant})
             p.setVisible(p == target);
     }
+
     public AdminUI(int id) {
         setTitle("Admin");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

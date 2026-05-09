@@ -37,10 +37,10 @@ public class HomeUI extends JFrame {
             }
         });
     }
-    private void initRightPanel() {
+    private void initPanel() {
         JPanel right = new JPanel(null);
         right.setBackground(Color.WHITE);
-        right.setBounds(200, 0, 500, 600);
+        right.setBounds(200, 75, 500, 400);
 
         JLabel lblSignIn = new JLabel("Se connecter");
         lblSignIn.setFont(new Font("Segoe UI", Font.BOLD, 22));
@@ -107,7 +107,7 @@ public class HomeUI extends JFrame {
         setSize(900, 600);
         setResizable(false);
         setLayout(null);
-        initRightPanel();
+        initPanel();
         setLocationRelativeTo(null);
         setVisible(true);
     }

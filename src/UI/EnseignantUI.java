@@ -151,25 +151,21 @@ public class EnseignantUI extends JFrame {
     public void initializeLayeredPanel(int id_prof) {
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setBounds(0, 0, 800, 600);
-
         panelEtudiant = new JPanel();
         panelEtudiant.setBackground(Color.lightGray);
         panelEtudiant.setBounds(0, 0, 800, 600);
         panelEtudiant.setVisible(true);
         Etudiantable();
-
         panelMatieres = new JPanel();
         panelMatieres.setBackground(Color.lightGray);
         panelMatieres.setBounds(0, 0, 800, 600);
         panelMatieres.setVisible(false);
         Matieretable();
-
         panelnotes = new JPanel();
         panelnotes.setBackground(Color.lightGray);
         panelnotes.setBounds(0, 0, 800, 600);
         panelnotes.setVisible(false);
         Notespanel(id_prof);
-
         layeredPane.add(panelEtudiant, Integer.valueOf(0));
         layeredPane.add(panelMatieres, Integer.valueOf(1));
         layeredPane.add(panelnotes, Integer.valueOf(2));
@@ -182,38 +178,30 @@ public class EnseignantUI extends JFrame {
         form.setBounds(20, 20, 600, 150);
         form.setLayout(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns
         form.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
         JTextField txtEtudiantId = new JTextField();
         JTextField txtMatiere = new JTextField();
         JTextField txtNote = new JTextField();
-
         form.add(new JLabel("ID Etudiant:"));
         form.add(txtEtudiantId);
         form.add(new JLabel("Matière:"));
         form.add(txtMatiere);
         form.add(new JLabel("Note:"));
         form.add(txtNote);
-
         JPanel actions = new JPanel();
         actions.setBackground(Color.white);
         actions.setBounds(20, 180, 460, 50);
         actions.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
-
         JButton btnAdd = new JButton("Ajouter");
         JButton btnUpdate = new JButton("Modifier");
         JButton btnDelete = new JButton("Supprimer");
-
         styleButton(btnAdd);
         styleButton(btnUpdate);
         styleButton(btnDelete);
-
         actions.add(btnAdd);
         actions.add(btnUpdate);
         actions.add(btnDelete);
-
         panelnotes.add(form);
         panelnotes.add(actions);
-
         btnAdd.addActionListener(e -> {
             try {
                 int id = Integer.parseInt(txtEtudiantId.getText());

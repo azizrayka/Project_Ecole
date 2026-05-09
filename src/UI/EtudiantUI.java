@@ -39,25 +39,21 @@ public class EtudiantUI extends JFrame {
     public void initializeLayeredPanel(int id_etd) {
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setBounds(0, 0, 800, 600);
-
         panelEtudiant = new JPanel();
         panelEtudiant.setBackground(Color.lightGray);
         panelEtudiant.setBounds(0, 0, 800, 600);
         panelEtudiant.setVisible(true);
         EnseignantTable();
-
         panelMatieres = new JPanel();
         panelMatieres.setBackground(Color.lightGray);
         panelMatieres.setBounds(0, 0, 800, 600);
         panelMatieres.setVisible(false);
         Matieretable();
-
         panelnotes = new JPanel();
         panelnotes.setBackground(Color.lightGray);
         panelnotes.setBounds(0, 0, 800, 600);
         panelnotes.setVisible(false);
         Notestable(id_etd);
-
         layeredPane.add(panelEtudiant, Integer.valueOf(0));
         layeredPane.add(panelMatieres, Integer.valueOf(1));
         layeredPane.add(panelnotes, Integer.valueOf(2));

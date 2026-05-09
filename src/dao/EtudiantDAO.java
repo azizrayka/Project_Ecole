@@ -9,6 +9,7 @@ import java.util.List;
 
 public class EtudiantDAO {
     private Connection connection;
+
     public EtudiantDAO() {
         try {
             this.connection = DatabaseConnection.getConnection();
@@ -16,75 +17,106 @@ public class EtudiantDAO {
             System.out.println("Could not connect to database in DAO");
         }
     }
-    public List<Object[]> getEnseignants(int id_etd) throws SQLException, ClassNotFoundException {
-        List<Object[]> list = new ArrayList<>();
-        String sql = """
-        SELECT DISTINCT p.nom, p.prenom, n.nom_matiere
-        FROM person p
-        JOIN enseignant en ON en.id_person = p.id
-        JOIN matiere m ON m.id_prof = en.id_prof
-        JOIN note n ON n.nom_matiere = m.nom
-        WHERE n.id_etu = ?
-    """;
+
+    /**
+     * Resolves the etudiant.id_etu PK from the person.id FK.
+     * Returns -1 if not found.
+     */
+    private int resolveIdEtu(int id_person) {
+        String sql = "SELECT id_etu FROM etudiant WHERE id_person = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id_etd);
+            ps.setInt(1, id_person);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt("id_etu");
+        } catch (SQLException e) {
+            System.out.println("Error resolveIdEtu: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    public List<Object[]> getEnseignants(int id_person) throws SQLException, ClassNotFoundException {
+        List<Object[]> list = new ArrayList<>();
+        int id_etu = resolveIdEtu(id_person);
+        if (id_etu == -1) {
+            System.out.println("getEnseignants: no etudiant found for id_person=" + id_person);
+            return list;
+        }
+        String sql = """
+            SELECT DISTINCT p.nom, p.prenom, n.nom_matiere
+            FROM person p
+            JOIN enseignant en ON en.id_person = p.id
+            JOIN matiere m ON m.id_prof = en.id_prof
+            JOIN note n ON n.nom_matiere = m.nom
+            WHERE n.id_etu = ?
+        """;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id_etu);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Object[] row = {
+                list.add(new Object[]{
                         rs.getString("nom"),
                         rs.getString("prenom"),
-                        rs.getString("nom_matiere") // ← was "matiere"
-                };
-                list.add(row);
+                        rs.getString("nom_matiere")
+                });
             }
         } catch (Exception e) {
             System.out.println("Error getEnseignants: " + e.getMessage());
         }
         return list;
     }
-    public List<Object[]> getMatieres(int id_etd) throws SQLException, ClassNotFoundException {
+
+    public List<Object[]> getMatieres(int id_person) throws SQLException, ClassNotFoundException {
         List<Object[]> list = new ArrayList<>();
+        int id_etu = resolveIdEtu(id_person);
+        if (id_etu == -1) {
+            System.out.println("getMatieres: no etudiant found for id_person=" + id_person);
+            return list;
+        }
         String sql = """
-        SELECT DISTINCT m.nom, m.coeff
-        FROM matiere m
-        JOIN note n ON n.nom_matiere = m.nom
-        WHERE n.id_etu = ?
-    """;
+            SELECT DISTINCT m.nom, m.coeff
+            FROM matiere m
+            JOIN note n ON n.nom_matiere = m.nom
+            WHERE n.id_etu = ?
+        """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id_etd);
+            ps.setInt(1, id_etu);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Object[] row = {
+                list.add(new Object[]{
                         rs.getString("nom"),
                         rs.getDouble("coeff")
-                };
-                list.add(row);
+                });
             }
         } catch (Exception e) {
             System.out.println("Error getMatieres: " + e.getMessage());
         }
         return list;
     }
-    public List<Object[]> getNotes(int id_etd) throws SQLException, ClassNotFoundException {
+
+    public List<Object[]> getNotes(int id_person) throws SQLException, ClassNotFoundException {
         List<Object[]> list = new ArrayList<>();
+        int id_etu = resolveIdEtu(id_person);
+        if (id_etu == -1) {
+            System.out.println("getNotes: no etudiant found for id_person=" + id_person);
+            return list;
+        }
         String sql = """
-        SELECT DISTINCT m.nom, n.note
-        FROM matiere m
-        JOIN note n ON n.nom_matiere = m.nom
-        WHERE n.id_etu = ?
+            SELECT DISTINCT m.nom, n.note
+            FROM matiere m
+            JOIN note n ON n.nom_matiere = m.nom
+            WHERE n.id_etu = ?
         """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id_etd);
+            ps.setInt(1, id_etu);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Object[] row = {
+                list.add(new Object[]{
                         rs.getString("nom"),
                         rs.getDouble("note")
-                };
-                list.add(row);
+                });
             }
-        }catch (Exception e) {
-            System.out.println("Error getMatieres: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Error getNotes: " + e.getMessage());
         }
         return list;
     }

@@ -9,7 +9,6 @@ import java.util.List;
 
 public class EtudiantDAO {
     private Connection connection;
-
     public EtudiantDAO() {
         try {
             this.connection = DatabaseConnection.getConnection();
@@ -17,7 +16,6 @@ public class EtudiantDAO {
             System.out.println("Could not connect to database in DAO");
         }
     }
-
     private int resolveIdEtu(int id_person) {
         String sql = "SELECT id_etu FROM etudiant WHERE id_person = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -30,7 +28,6 @@ public class EtudiantDAO {
         }
         return -1;
     }
-
     public double getMoyenne(int id_person) {
         int id_etu = resolveIdEtu(id_person);
         if (id_etu == -1) return 0;
@@ -50,7 +47,6 @@ public class EtudiantDAO {
         }
         return 0;
     }
-
     public boolean updateMoyenne(int id_person) {
         int id_etu = resolveIdEtu(id_person);
         if (id_etu == -1) return false;
@@ -72,7 +68,6 @@ public class EtudiantDAO {
             return false;
         }
     }
-
     public List<Object[]> getEnseignants(int id_person) throws SQLException, ClassNotFoundException {
         List<Object[]> list = new ArrayList<>();
         int id_etu = resolveIdEtu(id_person);
@@ -101,7 +96,6 @@ public class EtudiantDAO {
         }
         return list;
     }
-
     public List<Object[]> getMatieres(int id_person) throws SQLException, ClassNotFoundException {
         List<Object[]> list = new ArrayList<>();
         int id_etu = resolveIdEtu(id_person);
@@ -124,7 +118,6 @@ public class EtudiantDAO {
         }
         return list;
     }
-
     public List<Object[]> getNotes(int id_person) throws SQLException, ClassNotFoundException {
         List<Object[]> list = new ArrayList<>();
         int id_etu = resolveIdEtu(id_person);

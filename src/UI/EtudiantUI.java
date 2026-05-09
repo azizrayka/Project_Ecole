@@ -24,7 +24,6 @@ public class EtudiantUI extends JFrame {
         table.setSelectionBackground(new Color(235, 245, 251));
         table.setSelectionForeground(Color.BLACK);
     }
-
     public void styleButton(JButton btn) {
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
@@ -37,7 +36,6 @@ public class EtudiantUI extends JFrame {
             public void mouseExited(java.awt.event.MouseEvent evt)  { btn.setBackground(new Color(52, 152, 219)); }
         });
     }
-
     public void initializeLayeredPanel(int id_etd) {
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setBounds(0, 0, 800, 600);
@@ -65,7 +63,6 @@ public class EtudiantUI extends JFrame {
         layeredPane.add(panelnotes,     Integer.valueOf(2));
         this.add(layeredPane);
     }
-
     private void Notestable(int id_etd) {
         panelnotes.setLayout(null);
 
@@ -86,7 +83,6 @@ public class EtudiantUI extends JFrame {
 
         updateNoteFromDAO(id_etd);
     }
-
     private void updateNoteFromDAO(int id_etd) {
         try {
             EtudiantDAO dao = new EtudiantDAO();
@@ -105,7 +101,6 @@ public class EtudiantUI extends JFrame {
             System.out.println("updateNoteFromDAO error: " + e.getMessage());
         }
     }
-
     public void updateTableFromDAO() {
         try {
             EtudiantDAO dao = new EtudiantDAO();
@@ -117,7 +112,6 @@ public class EtudiantUI extends JFrame {
             System.out.println(e.getMessage());
         }
     }
-
     private void updateMatiereFromDAO(int id_etd) {
         try {
             EtudiantDAO dao = new EtudiantDAO();
@@ -129,7 +123,6 @@ public class EtudiantUI extends JFrame {
             System.out.println("updateMatiereFromDAO error: " + e.getMessage());
         }
     }
-
     public void Matieretable() {
         String[] column = {"Matière", "Coefficient"};
         DefaultTableModel model = new DefaultTableModel(column, 0);
@@ -141,7 +134,6 @@ public class EtudiantUI extends JFrame {
         panelMatieres.add(scrollPane);
         updateMatiereFromDAO(id_etd);
     }
-
     public void EnseignantTable() {
         String[] columns = {"Nom", "Prénom", "Matière"};
         DefaultTableModel model = new DefaultTableModel(columns, 0);
@@ -153,7 +145,6 @@ public class EtudiantUI extends JFrame {
         panelEtudiant.add(scrollPane);
         updateTableFromDAO();
     }
-
     public void initializeSidePanel() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.darkGray);
@@ -184,7 +175,6 @@ public class EtudiantUI extends JFrame {
 
         add(panel);
     }
-
     public EtudiantUI(int id_etd) {
         this.id_etd = id_etd;
         setTitle("Étudiant");

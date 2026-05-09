@@ -111,4 +111,16 @@ public class EnseignantDAO implements BaseDAO<Enseignant> {
         }
         return list;
     }
+    public int resolveIdProf(int id_person) {
+        String sql = "SELECT id_prof FROM enseignant WHERE id_person = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id_person);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return rs.getInt("id_prof");
+            }
+        } catch (Exception e) {
+            System.out.println("Error resolveIdProf: " + e.getMessage());
+        }
+        return -1;
+    }
 }

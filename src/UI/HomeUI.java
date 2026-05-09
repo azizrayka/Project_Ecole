@@ -1,5 +1,6 @@
 package UI;
 
+import dao.EnseignantDAO;
 import dao.PersonDAO;
 import javax.swing.*;
 import java.awt.*;
@@ -86,7 +87,12 @@ public class HomeUI extends JFrame {
                 dispose();
                 switch (role) {
                     case 0 -> new AdminUI(id);
-                    case 1 -> new EnseignantUI(id);
+                    case 1 -> {
+                        EnseignantDAO enseignantDAO = new EnseignantDAO();
+                        int id_prof = enseignantDAO.resolveIdProf(id);
+                        if (id_prof != -1) new EnseignantUI(id_prof);
+                        else JOptionPane.showMessageDialog(this, "Enseignant introuvable.");
+                    }
                     case 2 -> new EtudiantUI(id);
                     default -> JOptionPane.showMessageDialog(this, "Rôle inconnu.");
                 }

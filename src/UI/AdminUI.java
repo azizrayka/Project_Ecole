@@ -344,7 +344,7 @@ public class AdminUI extends JFrame {
     }
     public void initializeSidePanel() {
         JPanel panel = new JPanel();
-        panel.setBackground(Color.darkGray);
+        panel.setBackground(Color.lightGray);
         panel.setBounds(790, 0, 300, 600);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(Box.createRigidArea(new Dimension(20, 20)));

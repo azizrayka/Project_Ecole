@@ -23,7 +23,6 @@ public class PersonDAO {
             System.out.println("Error: Database connection is null in login method");
             return null;
         }
-
         String sql = "SELECT id, role FROM person WHERE email = ? AND mtp = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -71,31 +70,5 @@ public class PersonDAO {
             e.printStackTrace();
         }
         return -1;
-    }
-    public boolean emailExists(String email) {
-        if (connection == null) {
-            System.out.println("Error: Database connection is null in emailExists method");
-            return false;
-        }
-        String sql = "SELECT id FROM person WHERE email = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, email);
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
-        } catch (SQLException e) {
-            System.out.println("Error PersonDAO.emailExists: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        }
-    }
-    public void closeConnection() {
-        try {
-            if (connection != null && !connection.isClosed()) {
-                connection.close();
-                System.out.println("PersonDAO connection closed");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error closing connection: " + e.getMessage());
-        }
     }
 }

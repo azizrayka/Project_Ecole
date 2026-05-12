@@ -2,8 +2,7 @@ package dao;
 import database.DatabaseConnection;
 import module.Matiere;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+
 public class MatiereDAO implements BaseDAO<Matiere> {
     private Connection connection;
     public MatiereDAO() {
@@ -53,41 +52,4 @@ public class MatiereDAO implements BaseDAO<Matiere> {
         }
     }
 
-    public List<Matiere> getAll() {
-        List<Matiere> list = new ArrayList<>();
-        String sql = "SELECT nom, coeff, id_prof FROM matiere";
-        try (Statement st = connection.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                list.add(new Matiere(
-                        rs.getString("nom"),
-                        rs.getDouble("coeff"),
-                        rs.getInt("id_prof")
-                ));
-            }
-        } catch (SQLException e) {
-            System.out.println("Error MatiereDAO.getAll: " + e.getMessage());
-        }
-        return list;
-    }
-
-    public List<Matiere> getByProf(int id_prof) {
-        List<Matiere> list = new ArrayList<>();
-        String sql = "SELECT nom, coeff, id_prof FROM matiere WHERE id_prof = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id_prof);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(new Matiere(
-                            rs.getString("nom"),
-                            rs.getDouble("coeff"),
-                            rs.getInt("id_prof")
-                    ));
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println("Error MatiereDAO.getByProf: " + e.getMessage());
-        }
-        return list;
-    }
 }

@@ -2,8 +2,6 @@ package dao;
 import database.DatabaseConnection;
 import module.Note;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class NoteDAO implements BaseDAO<Note> {
     private Connection connection;
@@ -54,44 +52,5 @@ public class NoteDAO implements BaseDAO<Note> {
             return false;
         }
     }
-    public List<Note> getByEtudiant(int id_etu) {
-        List<Note> list = new ArrayList<>();
-        String sql = "SELECT id_etu, nom_matiere, note, id_prof FROM note WHERE id_etu = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id_etu);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(new Note(
-                            rs.getInt("id_etu"),
-                            rs.getString("nom_matiere"),
-                            rs.getDouble("note"),
-                            rs.getInt("id_prof")
-                    ));
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println("Error NoteDAO.getByEtudiant: " + e.getMessage());
-        }
-        return list;
-    }
-    public List<Note> getByMatiere(String nom_matiere) {
-        List<Note> list = new ArrayList<>();
-        String sql = "SELECT id_etu, nom_matiere, note, id_prof FROM note WHERE nom_matiere = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, nom_matiere);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(new Note(
-                            rs.getInt("id_etu"),
-                            rs.getString("nom_matiere"),
-                            rs.getDouble("note"),
-                            rs.getInt("id_prof")
-                    ));
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println("Error NoteDAO.getByMatiere: " + e.getMessage());
-        }
-        return list;
-    }
+
 }

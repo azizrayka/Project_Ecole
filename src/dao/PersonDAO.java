@@ -1,5 +1,7 @@
 package dao;
 
+import database.DatabaseConnection;
+
 import java.sql.*;
 
 public class PersonDAO {

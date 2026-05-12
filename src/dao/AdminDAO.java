@@ -1,12 +1,10 @@
 package dao;
-
+import database.DatabaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 public class AdminDAO {
     private Connection connection;
-
     public AdminDAO() {
         try {
             this.connection = DatabaseConnection.getConnection();
@@ -14,8 +12,7 @@ public class AdminDAO {
             System.out.println("Could not connect to database in DAO");
         }
     }
-    public int addPerson(String nom, String prenom, String dn,
-                         String email, String role, String mtp) {
+    public int addPerson(String nom, String prenom, String dn, String email, String role, String mtp) {
         String sql = "INSERT INTO person (nom, prenom, dn, email, role, mtp) VALUES (?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, nom);
@@ -29,7 +26,6 @@ public class AdminDAO {
                 if (rs.next()) return rs.getInt(1);
             }
         } catch (SQLException e) {
-            System.out.println("Error addPerson: " + e.getMessage());
             e.printStackTrace();
         }
         return -1;
@@ -40,59 +36,41 @@ public class AdminDAO {
             ps.setInt(1, personId);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error deletePerson: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
     public List<Object[]> getEtudiants() {
         List<Object[]> list = new ArrayList<>();
-        String sql = """
-            SELECT e.id_etu, p.nom, p.prenom, p.dn, p.email, e.niveau
-            FROM etudiant e
-            JOIN person p ON e.id_person = p.id
-        """;
-        try (Statement st = connection.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+        String sql = "SELECT e.id_etu, p.nom, p.prenom, p.dn, p.email, e.niveau FROM etudiant e JOIN person p ON e.id_person = p.id";
+        try (Statement st = connection.createStatement(); ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
-                list.add(new Object[]{
-                        rs.getInt("id_etu"),
-                        rs.getString("nom"),
-                        rs.getString("prenom"),
-                        rs.getString("dn"),
-                        rs.getString("email"),
-                        rs.getString("niveau")
-                });
+                list.add(new Object[]{rs.getInt("id_etu"), rs.getString("nom"), rs.getString("prenom"), rs.getString("dn"), rs.getString("email"), rs.getString("niveau")});
             }
         } catch (SQLException e) {
-            System.out.println("Error getEtudiants: " + e.getMessage());
             e.printStackTrace();
         }
         return list;
     }
     public boolean addEtudiant(int personId, String niveau) {
-        String sql = "INSERT INTO etudiant (id_person, niveau) VALUES (?, ?)";
+        String sql = "INSERT INTO etudiant (id_person, niveau, moy) VALUES (?, ?,0)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, personId);
             ps.setString(2, niveau);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error addEtudiant: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
     public boolean deleteEtudiant(int id_etu) {
-        // Retrieve the FK before deleting the child
         int personId = getPersonIdFromEtudiant(id_etu);
         if (personId == -1) return false;
-
         String sqlChild = "DELETE FROM etudiant WHERE id_etu = ?";
         try (PreparedStatement ps = connection.prepareStatement(sqlChild)) {
             ps.setInt(1, id_etu);
             ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleteEtudiant (child): " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -106,29 +84,18 @@ public class AdminDAO {
                 if (rs.next()) return rs.getInt("id_person");
             }
         } catch (SQLException e) {
-            System.out.println("Error getPersonIdFromEtudiant: " + e.getMessage());
             e.printStackTrace();
         }
         return -1;
     }
     public List<Object[]> getEnseignants() {
         List<Object[]> list = new ArrayList<>();
-        String sql = """
-        SELECT en.id_prof, p.nom, p.prenom, p.email
-        FROM enseignant en
-        JOIN person p ON p.id = en.id_person
-    """;
-        try (PreparedStatement ps = connection.prepareStatement(sql);ResultSet rs = ps.executeQuery()) {
+        String sql = "SELECT en.id_prof, p.nom, p.prenom, p.email FROM enseignant en JOIN person p ON p.id = en.id_person";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                list.add(new Object[]{
-                        rs.getInt("id_prof"),
-                        rs.getString("nom"),
-                        rs.getString("prenom"),
-                        rs.getString("email")
-                });
+                list.add(new Object[]{rs.getInt("id_prof"), rs.getString("nom"), rs.getString("prenom"), rs.getString("email")});
             }
         } catch (SQLException e) {
-            System.out.println("Error getEnseignants: " + e.getMessage());
             e.printStackTrace();
         }
         return list;
@@ -140,7 +107,6 @@ public class AdminDAO {
             ps.setString(2, speciality);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error addEnseignant: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -148,13 +114,11 @@ public class AdminDAO {
     public boolean deleteEnseignant(int id_prof) {
         int personId = getPersonIdFromEnseignant(id_prof);
         if (personId == -1) return false;
-
         String sqlChild = "DELETE FROM enseignant WHERE id_prof = ?";
         try (PreparedStatement ps = connection.prepareStatement(sqlChild)) {
             ps.setInt(1, id_prof);
             ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Error deleteEnseignant (child): " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -168,7 +132,6 @@ public class AdminDAO {
                 if (rs.next()) return rs.getInt("id_person");
             }
         } catch (SQLException e) {
-            System.out.println("Error getPersonIdFromEnseignant: " + e.getMessage());
             e.printStackTrace();
         }
         return -1;
@@ -178,10 +141,8 @@ public class AdminDAO {
         String sql = "SELECT nom, coeff FROM matiere";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
-            while (rs.next())
-                list.add(new Object[]{ rs.getString("nom"), rs.getDouble("coeff") });
+            while (rs.next()) list.add(new Object[]{ rs.getString("nom"), rs.getDouble("coeff") });
         } catch (SQLException e) {
-            System.out.println("Error getMatieres: " + e.getMessage());
             e.printStackTrace();
         }
         return list;
@@ -191,11 +152,8 @@ public class AdminDAO {
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id_prof);
             ps.setString(2, nom_matiere);
-            int rows = ps.executeUpdate();
-            System.out.println("affecterMatiereEnseignant rows affected: " + rows);
-            return rows > 0;
+            return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error affecterMatiereEnseignant: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
@@ -207,7 +165,6 @@ public class AdminDAO {
             ps.setString(2, nom_matiere);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.out.println("Error affecterEtudiantMatiere: " + e.getMessage());
             e.printStackTrace();
             return false;
         }

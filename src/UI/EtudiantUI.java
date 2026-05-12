@@ -1,17 +1,14 @@
 package UI;
-
 import dao.EtudiantDAO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
-
 public class EtudiantUI extends JFrame {
     private final int id_etd;
     private JPanel panelEtudiant, panelMatieres, panelnotes;
     private JTable tableEtudiants, matiereTable, notesTable;
     private JLabel lblMoyenne;
-
     public void styleTable(JTable table) {
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         table.getTableHeader().setOpaque(false);
@@ -33,39 +30,34 @@ public class EtudiantUI extends JFrame {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) { btn.setBackground(new Color(41, 128, 185)); }
-            public void mouseExited(java.awt.event.MouseEvent evt)  { btn.setBackground(new Color(52, 152, 219)); }
+            public void mouseExited(java.awt.event.MouseEvent evt) { btn.setBackground(new Color(52, 152, 219)); }
         });
     }
     public void initializeLayeredPanel(int id_etd) {
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setBounds(0, 0, 800, 600);
-
         panelEtudiant = new JPanel();
         panelEtudiant.setBackground(Color.lightGray);
         panelEtudiant.setBounds(0, 0, 800, 600);
         panelEtudiant.setVisible(true);
         EnseignantTable();
-
         panelMatieres = new JPanel();
         panelMatieres.setBackground(Color.lightGray);
         panelMatieres.setBounds(0, 0, 800, 600);
         panelMatieres.setVisible(false);
         Matieretable();
-
         panelnotes = new JPanel();
         panelnotes.setBackground(Color.lightGray);
         panelnotes.setBounds(0, 0, 800, 600);
         panelnotes.setVisible(false);
         Notestable(id_etd);
-
-        layeredPane.add(panelEtudiant,  Integer.valueOf(0));
-        layeredPane.add(panelMatieres,  Integer.valueOf(1));
-        layeredPane.add(panelnotes,     Integer.valueOf(2));
+        layeredPane.add(panelEtudiant, Integer.valueOf(0));
+        layeredPane.add(panelMatieres, Integer.valueOf(1));
+        layeredPane.add(panelnotes, Integer.valueOf(2));
         this.add(layeredPane);
     }
     private void Notestable(int id_etd) {
         panelnotes.setLayout(null);
-
         String[] column = {"Matière", "Note"};
         DefaultTableModel model = new DefaultTableModel(column, 0);
         notesTable = new JTable(model);
@@ -73,14 +65,11 @@ public class EtudiantUI extends JFrame {
         scrollPane.setBounds(100, 50, 600, 350);
         styleTable(notesTable);
         panelnotes.add(scrollPane);
-
-        // moyenne label
         lblMoyenne = new JLabel("Moyenne : --");
         lblMoyenne.setFont(new Font("Segoe UI", Font.BOLD, 15));
         lblMoyenne.setForeground(new Color(44, 62, 80));
         lblMoyenne.setBounds(100, 415, 400, 30);
         panelnotes.add(lblMoyenne);
-
         updateNoteFromDAO(id_etd);
     }
     private void updateNoteFromDAO(int id_etd) {
@@ -90,12 +79,8 @@ public class EtudiantUI extends JFrame {
             DefaultTableModel model = (DefaultTableModel) notesTable.getModel();
             model.setRowCount(0);
             for (Object[] row : rows) model.addRow(row);
-
-            // calculate and display moyenne
             double moyenne = dao.getMoyenne(id_etd);
             lblMoyenne.setText(String.format("Moyenne : %.2f / 20", moyenne));
-
-            // persist to DB
             dao.updateMoyenne(id_etd);
         } catch (Exception e) {
             System.out.println("updateNoteFromDAO error: " + e.getMessage());
@@ -151,14 +136,11 @@ public class EtudiantUI extends JFrame {
         panel.setBounds(790, 0, 300, 600);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(Box.createRigidArea(new Dimension(20, 20)));
-
         Dimension btnSize = new Dimension(200, 40);
-
-        JButton button  = new JButton("consulter enseignants");
+        JButton button = new JButton("consulter enseignants");
         JButton button2 = new JButton("consulter matières");
         JButton button3 = new JButton("consulter notes");
-        JButton btnBack = new JButton("Retour");
-
+        JButton btnBack = new JButton("Déconnecter");
         for (JButton btn : new JButton[]{button, button2, button3, btnBack}) {
             styleButton(btn);
             btn.setMaximumSize(btnSize);
@@ -167,12 +149,10 @@ public class EtudiantUI extends JFrame {
             panel.add(btn);
             panel.add(Box.createRigidArea(new Dimension(0, 20)));
         }
-
-        button.addActionListener(e  -> { panelEtudiant.setVisible(true);  panelMatieres.setVisible(false); panelnotes.setVisible(false); });
-        button2.addActionListener(e -> { panelEtudiant.setVisible(false); panelMatieres.setVisible(true);  panelnotes.setVisible(false); });
-        button3.addActionListener(e -> { panelEtudiant.setVisible(false); panelMatieres.setVisible(false); panelnotes.setVisible(true);  });
+        button.addActionListener(e -> { panelEtudiant.setVisible(true); panelMatieres.setVisible(false); panelnotes.setVisible(false); });
+        button2.addActionListener(e -> { panelEtudiant.setVisible(false); panelMatieres.setVisible(true); panelnotes.setVisible(false); });
+        button3.addActionListener(e -> { panelEtudiant.setVisible(false); panelMatieres.setVisible(false); panelnotes.setVisible(true); });
         btnBack.addActionListener(e -> { dispose(); new HomeUI(); });
-
         add(panel);
     }
     public EtudiantUI(int id_etd) {

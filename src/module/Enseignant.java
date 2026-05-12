@@ -2,15 +2,15 @@ package  module;
 
 public class Enseignant extends Person {
     private int id_prof;
-    private int id_peron;
+    private int id_person;
     private String speciality;
     private int id_etd;
     private double note;
 
-    public Enseignant(int id, String nom, String prenom, String dn, String email, String role, String mtp, int id_prof, int id_peron, String speciality) {
+    public Enseignant(int id, String nom, String prenom, String dn, String email, String role, String mtp, int id_prof, int id_person, String speciality) {
         super(id, nom, prenom, dn, email, role, mtp);
         this.id_prof = id_prof;
-        this.id_peron = id_peron;
+        this.id_person = id_person;
         this.speciality = speciality;
     }
     public Enseignant(int id_etd, String speciality, double note, int id_prof) {
@@ -44,12 +44,12 @@ public class Enseignant extends Person {
         this.id_prof = id_prof;
     }
 
-    public int getId_peron() {
-        return id_peron;
+    public int getId_person() {
+        return id_person;
     }
 
-    public void setId_peron(int id_peron) {
-        this.id_peron = id_peron;
+    public void setId_person(int id_peron) {
+        this.id_person = id_peron;
     }
 
     public String getSpeciality() {

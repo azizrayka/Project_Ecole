@@ -1,13 +1,9 @@
 package UI;
-
 import dao.EnseignantDAO;
-import module.Enseignant;
-
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-
 public class EnseignantUI extends JFrame {
     private JPanel panelEtudiant, panelMatieres, panelnotes;
     private JTable tableEtudiants;
@@ -34,17 +30,15 @@ public class EnseignantUI extends JFrame {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) { btn.setBackground(new Color(41, 128, 185)); }
-            public void mouseExited(java.awt.event.MouseEvent evt)  { btn.setBackground(new Color(52, 152, 219)); }
+            public void mouseExited(java.awt.event.MouseEvent evt) { btn.setBackground(new Color(52, 152, 219)); }
         });
     }
     public void updateTableFromDAO() {
         try {
             EnseignantDAO dao = new EnseignantDAO();
-            List<Object[]> rows = dao.getAll(id_prof);
-
+            List<Object[]> rows = dao.getStudentsWithGrades(id_prof);
             DefaultTableModel model = (DefaultTableModel) tableEtudiants.getModel();
             model.setRowCount(0);
-
             for (Object[] row : rows) {
                 model.addRow(row);
             }
@@ -53,7 +47,7 @@ public class EnseignantUI extends JFrame {
         }
     }
     public void Etudiantable() {
-        String[] columns = { "id", "Nom", "Prenom", "Niveau", "matiere", "note" };
+        String[] columns = {"id", "Nom", "Prenom", "Niveau", "matiere", "note"};
         DefaultTableModel model = new DefaultTableModel(columns, 0);
         tableEtudiants = new JTable(model);
         JScrollPane scrollPane = new JScrollPane(tableEtudiants);
@@ -87,47 +81,44 @@ public class EnseignantUI extends JFrame {
             System.out.println("updateMatiereFromDAO error: " + e.getMessage());
         }
     }
-    public void initializeSidePanel(){
+    public void initializeSidePanel() {
         JPanel panel = new JPanel();
         panel.setBackground(Color.darkGray);
         panel.setBounds(790, 0, 300, 600);
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(Box.createRigidArea(new Dimension(20, 20)));
-
         Dimension btnSize = new Dimension(200, 40);
-
         JButton button = new JButton("consulter Etudiants");
         button.setMaximumSize(btnSize);
         button.setPreferredSize(btnSize);
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.addActionListener(e->{
+        button.addActionListener(e -> {
             panelEtudiant.setVisible(true);
             panelMatieres.setVisible(false);
             panelnotes.setVisible(false);
         });
-        JButton button2 = new JButton("consulter matiéres");
+        JButton button2 = new JButton("consulter matières");
         button2.setMaximumSize(btnSize);
         button2.setPreferredSize(btnSize);
         button2.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button2.addActionListener(e->{
+        button2.addActionListener(e -> {
             panelEtudiant.setVisible(false);
             panelMatieres.setVisible(true);
             panelnotes.setVisible(false);
         });
-        JButton button3 = new JButton("gerer notes");
+        JButton button3 = new JButton("gérer notes");
         button3.setMaximumSize(btnSize);
         button3.setPreferredSize(btnSize);
         button3.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button3.addActionListener(e->{
+        button3.addActionListener(e -> {
             panelEtudiant.setVisible(false);
             panelMatieres.setVisible(false);
             panelnotes.setVisible(true);
         });
-        JButton btnBack = new JButton("Retour");
+        JButton btnBack = new JButton("Déconnecter");
         btnBack.setMaximumSize(btnSize);
         btnBack.setPreferredSize(btnSize);
         btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnBack.setBounds(270, 440, 200, 40);
         styleButton(btnBack);
         btnBack.addActionListener(e -> {
             dispose();
@@ -174,7 +165,7 @@ public class EnseignantUI extends JFrame {
         JPanel form = new JPanel();
         form.setBackground(Color.white);
         form.setBounds(100, 20, 600, 150);
-        form.setLayout(new GridLayout(3, 2, 10, 10)); // 3 rows, 2 columns
+        form.setLayout(new GridLayout(3, 2, 10, 10));
         form.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         JTextField txtEtudiantId = new JTextField();
         JTextField txtMatiere = new JTextField();
@@ -191,7 +182,7 @@ public class EnseignantUI extends JFrame {
         actions.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JButton btnAdd = new JButton("Ajouter");
         JButton btnUpdate = new JButton("Modifier");
-        JButton btnDelete = new JButton("Supprimer");
+        JButton btnDelete = new JButton("Réinitialiser");
         styleButton(btnAdd);
         styleButton(btnUpdate);
         styleButton(btnDelete);
@@ -202,54 +193,57 @@ public class EnseignantUI extends JFrame {
         panelnotes.add(actions);
         btnAdd.addActionListener(e -> {
             try {
-                int id = Integer.parseInt(txtEtudiantId.getText());
-                String matiere = txtMatiere.getText();
-                double note = Double.parseDouble(txtNote.getText());
-                Enseignant eng = new Enseignant(id, matiere, note, id_prof);
+                int id = Integer.parseInt(txtEtudiantId.getText().trim());
+                String matiere = txtMatiere.getText().trim();
+                double note = Double.parseDouble(txtNote.getText().trim());
                 EnseignantDAO dao = new EnseignantDAO();
-                if(dao.add(eng)) {
+                if (dao.saveNote(id, matiere, note, id_prof)) {
                     JOptionPane.showMessageDialog(this, "Note ajoutée !");
                     txtEtudiantId.setText("");
                     txtMatiere.setText("");
                     txtNote.setText("");
                     updateTableFromDAO();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Échec de l'ajout.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Veuillez entrer des nombres valides.");
             }
         });
         btnUpdate.addActionListener(e -> {
-            try{
-                int id = Integer.parseInt(txtEtudiantId.getText());
-                String matiere = txtMatiere.getText();
-                double note = Double.parseDouble(txtNote.getText());
-                Enseignant eng = new Enseignant(id, matiere, note, id_prof);
+            try {
+                int id = Integer.parseInt(txtEtudiantId.getText().trim());
+                String matiere = txtMatiere.getText().trim();
+                double note = Double.parseDouble(txtNote.getText().trim());
                 EnseignantDAO dao = new EnseignantDAO();
-                if(dao.update(eng)) {
-                    JOptionPane.showMessageDialog(this, "Note updated !");
+                if (dao.saveNote(id, matiere, note, id_prof)) {
+                    JOptionPane.showMessageDialog(this, "Note modifiée !");
                     txtEtudiantId.setText("");
                     txtMatiere.setText("");
                     txtNote.setText("");
                     updateTableFromDAO();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Échec de la modification.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
-            }catch(NumberFormatException ex){
+            } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Veuillez entrer des nombres valides.");
             }
         });
         btnDelete.addActionListener(e -> {
-            try{
-                int id = Integer.parseInt(txtEtudiantId.getText());
-                String matiere = txtMatiere.getText();
-                Enseignant eng = new Enseignant(id, matiere, 0, id_prof);
+            try {
+                int id = Integer.parseInt(txtEtudiantId.getText().trim());
+                String matiere = txtMatiere.getText().trim();
                 EnseignantDAO dao = new EnseignantDAO();
-                if(dao.delete(eng)) {
-                    JOptionPane.showMessageDialog(this, "Note deleted !");
+                if (dao.resetNote(id, matiere, id_prof)) {
+                    JOptionPane.showMessageDialog(this, "Note réinitialisée à 0 !");
                     txtEtudiantId.setText("");
                     txtMatiere.setText("");
                     txtNote.setText("");
                     updateTableFromDAO();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Échec de la réinitialisation.", "Erreur", JOptionPane.ERROR_MESSAGE);
                 }
-            }catch(NumberFormatException ex){
+            } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Veuillez entrer des nombres valides.");
             }
         });

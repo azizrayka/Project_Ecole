@@ -19,7 +19,6 @@ public class EnseignantDAO {
     }
     public boolean saveNote(int id_etu, String nom_matiere, double valeur, int id_prof) {
         Note note = new Note(id_etu, nom_matiere, valeur, id_prof);
-        // Try update first; if nothing was updated the row doesn't exist yet
         return noteDAO.update(note) || noteDAO.add(note);
     }
     public boolean resetNote(int id_etu, String nom_matiere, int id_prof) {
